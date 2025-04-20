@@ -14,13 +14,20 @@
                 <th>Nomor Kamar</th>
                 <th>Harga per Bulan</th>
                 <th>Status</th>
-                <th>Nomor WhatsApp</th>
-                <th>Aksi</th>
             </tr>
         </thead>
         <tbody id="daftar-kamar">
             </tbody>
     </table>
+
+    <div id="modal-aksi" class="modal">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <div id="harga-bayar-modal" style="margin-bottom: 10px; font-weight: bold;"></div> <button id="tombol-lunas-modal" class="button-bayar">Lunas</button>
+            <button id="tombol-tagih-modal" class="button-tagih">Tagih</button>
+            <input type="text" id="input-whatsapp-modal" class="whatsapp-input" placeholder="Nomor WhatsApp">
+        </div>
+    </div>
 
     <script src="script.js"></script>
 </body>
