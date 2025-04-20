@@ -1,0 +1,70 @@
+body {
+    font-family: sans-serif;
+    margin: 0; /* Hilangkan margin default body */
+    background-color: #f7f7f7; /* Latar belakang abu-abu muda */
+}
+
+h1 {
+    text-align: center;
+    color: #333;
+    padding: 20px 0;
+    margin-bottom: 20px;
+}
+
+table {
+    width: 95%; /* Sedikit lebih kecil dari 100% untuk memberikan ruang di sisi */
+    border-collapse: collapse;
+    margin: 20px auto; /* Pusatkan tabel dan berikan margin atas bawah */
+    background-color: #fff;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05); /* Bayangan tipis */
+    border-radius: 8px; /* Sudut membulat untuk tabel */
+    overflow: hidden; /* Untuk memastikan border-radius bekerja pada elemen di dalamnya */
+}
+
+thead {
+    background-color: #e0f2f7; /* Biru muda untuk header */
+    color: #333;
+}
+
+th, td {
+    border: none; /* Hilangkan border default sel */
+    padding: 12px 15px;
+    text-align: left;
+}
+
+th:first-child, td:first-child {
+    padding-left: 20px; /* Berikan sedikit ruang di awal kolom pertama */
+}
+
+tr:nth-child(even) {
+    background-color: #f9f9f9; /* Latar belakang sedikit berbeda untuk baris genap */
+}
+
+.status-dropdown {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 0.9em;
+}
+
+.button-bayar, .button-tagih {
+    padding: 8px 12px;
+    margin-right: 5px;
+    border: none;
+    border-radius: 20px; /* Sudut lebih membulat untuk tombol */
+    cursor: pointer;
+    font-size: 0.9em;
+    color: white;
+}
+
+.button-bayar {
+    background-color: #4dd0e1; /* Biru kehijauan muda */
+}
+
+.button-tagih {
+    background-color: #f48fb1; /* Pink sebagai aksen */
+}
+
+.button-bayar:hover, .button-tagih:hover {
+    opacity: 0.9;
+}
