@@ -1,70 +1,166 @@
 body {
-    font-family: sans-serif;
-    margin: 0; /* Hilangkan margin default body */
-    background-color: #f7f7f7; /* Latar belakang abu-abu muda */
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Font modern */
+    margin: 0;
+    background-color: #f4f6f8; /* Abu-abu muda bersih */
+    color: #333; /* Warna teks utama */
 }
 
 h1 {
     text-align: center;
-    color: #333;
-    padding: 20px 0;
-    margin-bottom: 20px;
+    color: #49108B; /* Hijau tua */
+    padding: 20px 10px;
+    margin-bottom: 30px;
 }
 
 table {
-    width: 95%; /* Sedikit lebih kecil dari 100% untuk memberikan ruang di sisi */
+    width: 95%;
     border-collapse: collapse;
-    margin: 20px auto; /* Pusatkan tabel dan berikan margin atas bawah */
+    margin: 20px auto;
     background-color: #fff;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05); /* Bayangan tipis */
-    border-radius: 8px; /* Sudut membulat untuk tabel */
-    overflow: hidden; /* Untuk memastikan border-radius bekerja pada elemen di dalamnya */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08); /* Bayangan lebih terasa */
+    border-radius: 12px; /* Sudut lebih membulat */
+    overflow: hidden;
 }
 
 thead {
-    background-color: #e0f2f7; /* Biru muda untuk header */
-    color: #333;
+    background-color: #8F87F1; /* Hijau muda untuk header */
+    color: #F3F8FF;
+    font-weight: bold;
 }
 
 th, td {
-    border: none; /* Hilangkan border default sel */
-    padding: 12px 15px;
+    padding: 16px 12px;
     text-align: left;
+    border-bottom: 1px solid #e0e0e0; /* Garis pemisah lebih tipis */
 }
 
 th:first-child, td:first-child {
-    padding-left: 20px; /* Berikan sedikit ruang di awal kolom pertama */
+    padding-left: 20px;
 }
 
-tr:nth-child(even) {
-    background-color: #f9f9f9; /* Latar belakang sedikit berbeda untuk baris genap */
+tr:last-child td {
+    border-bottom: none;
 }
 
-.status-dropdown {
-    padding: 8px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    font-size: 0.9em;
-}
-
-.button-bayar, .button-tagih {
-    padding: 8px 12px;
-    margin-right: 5px;
-    border: none;
-    border-radius: 20px; /* Sudut lebih membulat untuk tombol */
+.status-cell {
     cursor: pointer;
-    font-size: 0.9em;
+    color: #1976d2; /* Biru untuk status yang bisa diklik */
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 10; /* Lebih tinggi dari elemen lain */
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.5); /* Latar belakang lebih gelap */
+}
+
+.modal-content {
+    background-color: #fff;
+    margin: 10% auto; /* Jarak dari atas lebih sedikit */
+    padding: 30px;
+    border: none; /* Hilangkan border modal */
+    width: 80%;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Bayangan modal */
+    position: relative;
+}
+
+.close-button {
+    color: #757575;
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 24px;
+    font-weight: bold;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.close-button:hover,
+.close-button:focus {
+    color: #212121;
+}
+
+#tombol-lunas-modal, #tombol-tagih-modal, #input-whatsapp-modal {
+    display: block;
+    width: calc(100% - 20px);
+    margin-bottom: 15px;
+    padding: 14px;
+    box-sizing: border-box;
+    border-radius: 8px; /* Sudut tombol lebih bulat */
+    border: 1px solid #e0e0e0;
+    font-size: 1em;
+}
+
+#tombol-lunas-modal, #tombol-tagih-modal {
     color: white;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); /* Efek shadow pada tombol */
 }
 
-.button-bayar {
-    background-color: #4dd0e1; /* Biru kehijauan muda */
+#tombol-lunas-modal {
+    background-color: #4caf50; /* Hijau cerah untuk Lunas */
 }
 
-.button-tagih {
-    background-color: #f48fb1; /* Pink sebagai aksen */
+#tombol-tagih-modal {
+    background-color: #f44336; /* Merah cerah untuk Tagih */
 }
 
-.button-bayar:hover, .button-tagih:hover {
-    opacity: 0.9;
+/* Media query untuk layar dengan lebar minimal 600px */
+@media (min-width: 600px) {
+    table {
+        width: 90%;
+    }
+
+    .modal-content {
+        width: 40%;
+        margin: 5% auto;
+    }
+
+    #tombol-lunas-modal, #tombol-tagih-modal, #input-whatsapp-modal {
+        display: inline-block;
+        width: auto;
+        margin-right: 10px;
+        margin-bottom: 0;
+    }
 }
+/* ... semua gaya CSS sebelumnya ... */
+
+.button-bayar-tabel {
+    background: linear-gradient(to right, #8F87F1, #8F87F1, #8F87F1, #8F87F1);
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1em;
+    text-decoration: none;
+    font-weight: bold;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    transition: opacity 0.3s ease;
+}
+
+.button-bayar-tabel:hover {
+    opacity: 0.8;
+}
+
+/* ... gaya modal dan elemen lainnya ... */
+
+#tombol-lunas-modal {
+    background-color: #4caf50; /* Tetap hijau untuk indikasi lunas di modal */
+}
+
+#tombol-tagih-modal {
+    background-color: #f44336; /* Tetap merah untuk indikasi tagih di modal */
+}
+
+/* ... media query ... */
