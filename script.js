@@ -1,5 +1,13 @@
 document.addEventListener('DOMContentLoaded', function() {
     const daftarKamar = document.getElementById('daftar-kamar');
+    const modalAksi = document.getElementById('modal-aksi');
+    const tombolLunasModal = document.getElementById('tombol-lunas-modal');
+    const tombolTagihModal = document.getElementById('tombol-tagih-modal');
+    const inputWhatsAppModal = document.getElementById('input-whatsapp-modal');
+    const tombolTutupModal = document.querySelector('.close-button');
+    const hargaBayarModal = document.getElementById('harga-bayar-modal'); // Elemen baru untuk menampilkan harga
+    let kamarAktif = null;
+
     const dataKamar = [
         { nomor: 1, harga: 1200000, status: 'belum lunas', whatsapp: '' },
         { nomor: 2, harga: 1200000, status: 'lunas', whatsapp: '' },
@@ -18,81 +26,29 @@ document.addEventListener('DOMContentLoaded', function() {
         dataKamar.forEach(kamar => {
             const row = daftarKamar.insertRow();
 
-            const cellNomor = row.insertCell();
-            cellNomor.textContent = kamar.nomor;
+            let cell = row.insertCell();
+            cell.textContent = kamar.nomor;
+            cell.setAttribute('data-label', 'Nomor Kamar');
 
-            const cellHarga = row.insertCell();
-            cellHarga.textContent = formatRupiah(kamar.harga);
+            cell = row.insertCell();
+            cell.textContent = formatRupiah(kamar.harga);
+            cell.setAttribute('data-label', 'Harga per Bulan');
 
-            const cellStatus = row.insertCell();
-            const dropdownStatus = document.createElement('select');
-            dropdownStatus.classList.add('status-dropdown');
-            dropdownStatus.dataset.nomorKamar = kamar.nomor;
-
-            const optionBelumLunas = document.createElement('option');
-            optionBelumLunas.value = 'belum lunas';
-            optionBelumLunas.textContent = 'Belum Lunas';
-            optionBelumLunas.selected = kamar.status === 'belum lunas';
-
-            const optionLunas = document.createElement('option');
-            optionLunas.value = 'lunas';
-            optionLunas.textContent = 'Lunas';
-            optionLunas.selected = kamar.status === 'lunas';
-
-            dropdownStatus.appendChild(optionBelumLunas);
-            dropdownStatus.appendChild(optionLunas);
-
-            dropdownStatus.addEventListener('change', function() {
-                const nomorKamar = parseInt(this.dataset.nomorKamar);
-                const statusBaru = this.value;
-                ubahStatusPembayaran(nomorKamar, statusBaru);
-            });
-
-            cellStatus.appendChild(dropdownStatus);
-
-            const cellWhatsApp = row.insertCell();
-            const inputWhatsApp = document.createElement('input');
-            inputWhatsApp.type = 'text';
-            inputWhatsApp.classList.add('whatsapp-input');
-            inputWhatsApp.value = kamar.whatsapp;
-            inputWhatsApp.placeholder = 'Nomor WhatsApp';
-            inputWhatsApp.dataset.nomorKamar = kamar.nomor;
-            inputWhatsApp.addEventListener('change', function() {
-                const nomorKamar = parseInt(this.dataset.nomorKamar);
-                const nomorWhatsAppBaru = this.value;
-                updateNomorWhatsApp(nomorKamar, nomorWhatsAppBaru);
-            });
-            cellWhatsApp.appendChild(inputWhatsApp);
-
-            const cellAksi = row.insertCell();
-
-            const tombolLunas = document.createElement('button');
-            tombolLunas.textContent = 'Lunas';
-            tombolLunas.classList.add('button-bayar');
-            tombolLunas.addEventListener('click', function() {
-                const nomorKamar = kamar.nomor;
-                const kamarSaatIni = dataKamar.find(k => k.nomor === nomorKamar);
-                if (kamarSaatIni) {
-                    kirimNotifikasiLunas(nomorKamar, kamarSaatIni.whatsapp);
-                } else {
-                    alert(`Data kamar ${nomorKamar} tidak ditemukan.`);
+            cell = row.insertCell();
+            const tombolBayarTabel = document.createElement('button');
+            tombolBayarTabel.textContent = 'Pembayaran';
+            tombolBayarTabel.classList.add('button-bayar-tabel');
+            tombolBayarTabel.dataset.nomorKamar = kamar.nomor;
+            tombolBayarTabel.addEventListener('click', function() {
+                kamarAktif = dataKamar.find(k => k.nomor === parseInt(this.dataset.nomorKamar));
+                if (kamarAktif) {
+                    hargaBayarModal.textContent = `Harga Bayar: ${formatRupiah(kamarAktif.harga)}`;
+                    inputWhatsAppModal.value = kamarAktif.whatsapp;
+                    modalAksi.style.display = "block";
                 }
             });
-            cellAksi.appendChild(tombolLunas);
-
-            const tombolTagih = document.createElement('button');
-            tombolTagih.textContent = 'Tagih';
-            tombolTagih.classList.add('button-tagih');
-            tombolTagih.addEventListener('click', function() {
-                const nomorKamar = kamar.nomor;
-                const kamarSaatIni = dataKamar.find(k => k.nomor === nomorKamar);
-                if (kamarSaatIni) {
-                    kirimNotifikasiTagihan(nomorKamar, kamarSaatIni.whatsapp);
-                } else {
-                    alert(`Data kamar ${nomorKamar} tidak ditemukan.`);
-                }
-            });
-            cellAksi.appendChild(tombolTagih);
+            cell.appendChild(tombolBayarTabel);
+            cell.setAttribute('data-label', 'Status');
         });
     }
 
@@ -124,13 +80,13 @@ document.addEventListener('DOMContentLoaded', function() {
     function kirimNotifikasiTagihan(nomorKamar, nomorWhatsApp) {
         const kamar = dataKamar.find(kamar => kamar.nomor === nomorKamar);
         if (kamar && kamar.status === 'belum lunas' && nomorWhatsApp) {
-            const pesan = `Halo penghuni kamar ${kamar.nomor}, mohon segera melakukan pelunasan pembayaran kontrakan/kos sebelum tanggal 10. Terima kasih.`;
+            const pesan = `Halo penghuni kamar ${kamar.nomor}, mohon segera melakukan pelunasan pembayaran kontrakan/kos sebesar ${formatRupiah(kamar.harga)} sebelum tanggal 10. Terima kasih.`;
             const urlWhatsApp = `https://wa.me/${nomorWhatsApp.startsWith('+') ? '' : '+62'}${nomorWhatsApp}?text=${encodeURIComponent(pesan)}`;
             console.log("URL Tagih:", urlWhatsApp);
             window.open(urlWhatsApp, '_blank');
             alert(`Notifikasi tagihan dikirim ke WhatsApp untuk kamar ${nomorKamar} ke nomor ${nomorWhatsApp}.`);
         } else if (!nomorWhatsApp) {
-            alert(`Nomor WhatsApp untuk kamar ${nomorKamar} belum diisi.`);
+            alert(`Nomor WhatsApp belum diisi.`);
         } else if (kamar && kamar.status === 'lunas') {
             alert(`Kamar ${nomorKamar} sudah lunas.`);
         } else {
@@ -141,19 +97,48 @@ document.addEventListener('DOMContentLoaded', function() {
     function kirimNotifikasiLunas(nomorKamar, nomorWhatsApp) {
         const kamar = dataKamar.find(kamar => kamar.nomor === nomorKamar);
         if (kamar && kamar.status === 'lunas' && nomorWhatsApp) {
-            const pesan = `Terima kasih atas pembayaran kontrakan/kos untuk kamar ${kamar.nomor}. Pembayaran Anda telah kami terima.`;
+            const pesan = `Terima kasih atas pembayaran kontrakan/kos untuk kamar ${kamar.nomor} sebesar ${formatRupiah(kamar.harga)}. Pembayaran Anda telah kami terima.`;
             const urlWhatsApp = `https://wa.me/${nomorWhatsApp.startsWith('+') ? '' : '+62'}${nomorWhatsApp}?text=${encodeURIComponent(pesan)}`;
             console.log("URL Lunas:", urlWhatsApp);
             window.open(urlWhatsApp, '_blank');
             alert(`Notifikasi konfirmasi lunas dikirim ke WhatsApp untuk kamar ${nomorKamar} ke nomor ${nomorWhatsApp}.`);
         } else if (!nomorWhatsApp) {
-            alert(`Nomor WhatsApp untuk kamar ${nomorKamar} belum diisi.`);
+            alert(`Nomor WhatsApp belum diisi.`);
         } else if (kamar && kamar.status === 'belum lunas') {
             alert(`Kamar ${nomorKamar} belum lunas. Pastikan status sudah diubah menjadi 'Lunas' terlebih dahulu.`);
         } else {
             alert(`Data kamar ${nomorKamar} tidak ditemukan.`);
         }
     }
+
+    tombolLunasModal.addEventListener('click', function() {
+        if (kamarAktif) {
+            ubahStatusPembayaran(kamarAktif.nomor, 'lunas');
+            kamarAktif.whatsapp = inputWhatsAppModal.value;
+            kirimNotifikasiLunas(kamarAktif.nomor, kamarAktif.whatsapp);
+            modalAksi.style.display = "none";
+        }
+    });
+
+    tombolTagihModal.addEventListener('click', function() {
+        if (kamarAktif) {
+            kamarAktif.whatsapp = inputWhatsAppModal.value;
+            kirimNotifikasiTagihan(kamarAktif.nomor, kamarAktif.whatsapp);
+            modalAksi.style.display = "none";
+        }
+    });
+
+    tombolTutupModal.addEventListener('click', function() {
+        modalAksi.style.display = "none";
+        kamarAktif = null;
+    });
+
+    window.addEventListener('click', function(event) {
+        if (event.target == modalAksi) {
+            modalAksi.style.display = "none";
+            kamarAktif = null;
+        }
+    });
 
     tampilkanDaftarKamar();
 });
